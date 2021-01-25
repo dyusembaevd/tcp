@@ -2,6 +2,7 @@ package tcp
 
 import (
 	"net"
+	"time"
 )
 
 // TCPConfig ...
@@ -23,7 +24,7 @@ func (t *TCPConfig) Connect(hostname, port string) error {
 }
 
 func (t *TCPConfig) connection() error {
-	conn, err := net.Dial("tcp", t.hostname+":"+t.port)
+	conn, err := net.DialTimeout("tcp", t.hostname+":"+t.port, time.Minute)
 	t.conn = conn
 	return err
 }
@@ -38,8 +39,4 @@ func (t *TCPConfig) ReadTCPMessage() []byte {
 func (t *TCPConfig) WriteTCPMessage(message []byte) error {
 	_, err := t.conn.Write([]byte(message))
 	return err
-}
-
-func (t *TCPConfig) CloseConnection() {
-	t.conn.Close()
 }
