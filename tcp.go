@@ -39,3 +39,7 @@ func (t *TCPConfig) WriteTCPMessage(message []byte) error {
 	_, err := t.conn.Write([]byte(message))
 	return err
 }
+
+func (t *TCPConfig) CloseConnection() {
+	t.conn.Close()
+}
