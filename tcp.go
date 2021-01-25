@@ -4,7 +4,7 @@ import (
 	"net"
 )
 
-// TCPConfig ..
+// TCPConfig ...
 type TCPConfig struct {
 	hostname string
 	port     string
