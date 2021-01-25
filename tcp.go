@@ -25,7 +25,7 @@ func (t *TCPConfig) Connect(hostname, port string) error {
 
 func (t *TCPConfig) connection() error {
 	var d net.Dialer
-	d.Deadline = <-time.After(time.Minute)
+	d.Timeout = 1 * time.Minute
 	conn, err := d.Dial("tcp", t.hostname+":"+t.port)
 	// conn, err := net.DialTimeout("tcp", t.hostname+":"+t.port, 1*time.Minute)
 	t.conn = conn
