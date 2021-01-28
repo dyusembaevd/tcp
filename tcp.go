@@ -1,6 +1,7 @@
 package tcp
 
 import (
+	"fmt"
 	"net"
 	"time"
 )
@@ -24,10 +25,7 @@ func (t *TCPConfig) Connect(hostname, port string) error {
 }
 
 func (t *TCPConfig) connection() error {
-	var d net.Dialer
-	d.Timeout = 1 * time.Minute
-	d.Deadline = <-time.After(time.Minute)
-	conn, err := d.Dial("tcp", t.hostname+":"+t.port)
+	conn, err := net.Dial("tcp", t.hostname+":"+t.port)
 	// conn, err := net.DialTimeout("tcp", t.hostname+":"+t.port, 1*time.Minute)
 	t.conn = conn
 	return err
@@ -35,8 +33,22 @@ func (t *TCPConfig) connection() error {
 
 func (t *TCPConfig) ReadTCPMessage() []byte {
 	conn := t.conn
+	timer := time.NewTimer(1 * time.Minute)
+	out := make(chan string, 1)
 	buffer := make([]byte, 1024)
-	conn.Read(buffer)
+	select {
+	case <-timer.C:
+		fmt.Println("Timeout while reading TCP Message")
+		return []byte{}
+	case <-out:
+		fmt.Println("everything goes right!")
+		return buffer
+	default:
+		go func(foo chan string) {
+			conn.Read(buffer)
+			foo <- "Done"
+		}(out)
+	}
 	return buffer
 }
 
