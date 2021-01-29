@@ -1,7 +1,6 @@
 package tcp
 
 import (
-	"fmt"
 	"net"
 	"time"
 )
@@ -36,20 +35,16 @@ func (t *TCPConfig) ReadTCPMessage() []byte {
 	timer := time.NewTimer(1 * time.Minute)
 	out := make(chan string, 1)
 	buffer := make([]byte, 1024)
+	go func(foo chan string) {
+		conn.Read(buffer)
+		foo <- "Done"
+	}(out)
 	select {
 	case <-timer.C:
-		fmt.Println("Timeout while reading TCP Message")
 		return []byte{}
 	case <-out:
-		fmt.Println("everything goes right!")
 		return buffer
-	default:
-		go func(foo chan string) {
-			conn.Read(buffer)
-			foo <- "Done"
-		}(out)
 	}
-	return buffer
 }
 
 func (t *TCPConfig) WriteTCPMessage(message []byte) error {
