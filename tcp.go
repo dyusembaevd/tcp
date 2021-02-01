@@ -45,7 +45,6 @@ func (t *TCPConfig) ReadTCPMessage() []byte {
 
 	select {
 	case <-timer.C:
-		<-out <- "Done"
 		fmt.Println("message not found :(")
 		return []byte{}
 	case <-out:
