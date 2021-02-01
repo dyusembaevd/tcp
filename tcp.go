@@ -43,6 +43,7 @@ func (t *TCPConfig) ReadTCPMessage() []byte {
 	case <-timer.C:
 		return []byte{}
 	case <-out:
+		timer.Stop()
 		return buffer
 	}
 }
