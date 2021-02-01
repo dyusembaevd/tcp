@@ -46,7 +46,7 @@ LOOP:
 		fmt.Println("message not found :(")
 		return []byte{}
 	default:
-		if len(string(buffer)) != 0 {
+		if buffer[0] != 0 {
 			timer.Stop()
 			break LOOP
 		} else {
