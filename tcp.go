@@ -34,11 +34,11 @@ func (t *TCPConfig) connection() error {
 func (t *TCPConfig) ReadTCPMessage() []byte {
 	timer := time.NewTimer(1 * time.Minute)
 	buffer := make([]byte, 1024)
-	go func(buf *[]byte) {
+	go func() {
 		fmt.Println("Start reading in goroutine")
-		t.conn.Read(*buf)
+		t.conn.Read(buffer)
 		fmt.Println("Got message in goroutine")
-	}(&buffer)
+	}()
 
 LOOP:
 	select {
@@ -49,6 +49,8 @@ LOOP:
 		if len(string(buffer)) != 0 {
 			timer.Stop()
 			break LOOP
+		} else {
+			goto LOOP
 		}
 	}
 	return buffer
