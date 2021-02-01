@@ -41,6 +41,7 @@ func (t *TCPConfig) ReadTCPMessage() []byte {
 	}(out)
 	select {
 	case <-timer.C:
+		out <- "Done"
 		return []byte{}
 	case <-out:
 		timer.Stop()
