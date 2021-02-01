@@ -36,12 +36,15 @@ func (t *TCPConfig) ReadTCPMessage() []byte {
 	out := make(chan string, 1)
 	buffer := make([]byte, 1024)
 	go func(foo chan string) {
+		fmt.Println("Start reading in goroutine")
 		conn.Read(buffer)
+		fmt.Println("Got message in goroutine")
 		foo <- "Done"
 	}(out)
 	select {
 	case <-timer.C:
 		out <- "Done"
+		fmt.Prinlnt("message not found :(")
 		return []byte{}
 	case <-out:
 		timer.Stop()
