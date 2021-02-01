@@ -1,4 +1,4 @@
-package tcp
+package main
 
 import (
 	"fmt"
@@ -32,19 +32,20 @@ func (t *TCPConfig) connection() error {
 }
 
 func (t *TCPConfig) ReadTCPMessage() []byte {
-	conn := t.conn
 	timer := time.NewTimer(1 * time.Minute)
-	out := make(chan string, 1)
 	buffer := make([]byte, 1024)
+
+	out := make(chan string, 1)
 	go func(foo chan string) {
 		fmt.Println("Start reading in goroutine")
-		conn.Read(buffer)
+		t.conn.Read(buffer)
 		fmt.Println("Got message in goroutine")
 		foo <- "Done"
 	}(out)
+
 	select {
 	case <-timer.C:
-		out <- "Done"
+		<-out <- "Done"
 		fmt.Println("message not found :(")
 		return []byte{}
 	case <-out:
