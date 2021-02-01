@@ -8,26 +8,26 @@ import (
 
 // TCPConfig ...
 type TCPConfig struct {
-	hostname string
-	port     string
-	conn     net.Conn
+	Hostname string
+	Port     string
+	Conn     net.Conn
 }
 
 func NewConfig() *TCPConfig {
 	return &TCPConfig{}
 }
 
-func (t *TCPConfig) Connect(hostname, port string) error {
-	t.hostname = hostname
-	t.port = port
+func (t *TCPConfig) Connect(Hostname, Port string) error {
+	t.Hostname = Hostname
+	t.Port = Port
 	err := t.connection()
 	return err
 }
 
 func (t *TCPConfig) connection() error {
-	conn, err := net.Dial("tcp", t.hostname+":"+t.port)
-	// conn, err := net.DialTimeout("tcp", t.hostname+":"+t.port, 1*time.Minute)
-	t.conn = conn
+	Conn, err := net.Dial("tcp", t.Hostname+":"+t.Port)
+	// Conn, err := net.DialTimeout("tcp", t.Hostname+":"+t.Port, 1*time.Minute)
+	t.Conn = Conn
 	return err
 }
 
@@ -36,7 +36,7 @@ func (t *TCPConfig) ReadTCPMessage() []byte {
 	buffer := make([]byte, 1024)
 	go func() {
 		fmt.Println("Start reading in goroutine")
-		t.conn.Read(buffer)
+		t.Conn.Read(buffer)
 		fmt.Println("Got message in goroutine")
 	}()
 
@@ -57,6 +57,6 @@ LOOP:
 }
 
 func (t *TCPConfig) WriteTCPMessage(message []byte) error {
-	_, err := t.conn.Write([]byte(message))
+	_, err := t.Conn.Write([]byte(message))
 	return err
 }
